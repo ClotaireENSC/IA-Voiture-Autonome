@@ -34,7 +34,5 @@ public float movementSpeed;
         {
             transform.position -= transform.TransformDirection(Vector3.left) * Time.deltaTime * movementSpeed;
         }
-
-
     }
 }
