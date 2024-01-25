@@ -55,11 +55,16 @@ public class CarController : MonoBehaviour
         }
         else if (Accelerate < -0.1)
         {
-            currentSpeed = Mathf.Lerp(currentSpeed, -maxSpeed / 1.75f, Time.deltaTime * 1.0f);
+            currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 1.0f);
         }
         else
         {
             currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 2f);
+        }
+
+        if (currentSpeed<0.01f)
+        {
+            currentSpeed = 0f;
         }
 
         transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
@@ -94,7 +99,7 @@ public class CarController : MonoBehaviour
         Accelerate = 0;
         TurnRight = 0;
 
-        if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             Accelerate += 1;
         }
@@ -103,7 +108,7 @@ public class CarController : MonoBehaviour
             Accelerate -= 1;
         }
 
-        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             TurnRight -= 1;
         }
