@@ -13,6 +13,9 @@ public class CarController : MonoBehaviour
     public int TurnLeft = 0;
     public bool Collision = false;
 
+    public Ray ray;
+    private float rayLength;
+
     public NeuralNetwork NeuralNetwork;
 
     private void Start()
@@ -24,7 +27,9 @@ public class CarController : MonoBehaviour
     {
         if (!Collision)
         {
-            if (collision.gameObject.name == "Guard" || collision.gameObject.name == "Extra Guard")
+            if (collision.gameObject.name == "Guard" ||
+                collision.gameObject.name == "Extra Guard" ||
+                collision.gameObject.name == "Guard_2")
             {
                 this.Collision = true;
             }
@@ -38,18 +43,46 @@ public class CarController : MonoBehaviour
     private void InitializeCar()
     {
         currentSpeed = 0;
+
         NeuralNetwork = new NeuralNetwork();
+
+        ray = new Ray(transform.position, transform.forward);
+        rayLength = 5f;
     }
 
     void Update()
     {
-        //GetUserKeys();
-        GetAiKeys();
+        CheckRay();
+
+        GetUserKeys();
+        // GetAiKeys();
 
         if (!Collision)
         {
             Move();
             Rotate();
+        }
+    }
+
+    public void CheckRay()
+    {
+        Vector3 forward = transform.TransformDirection(Vector3.forward) * rayLength;
+
+        Color rayColor = Physics.Raycast(ray, rayLength) ? Color.red : Color.green;
+
+        Debug.DrawRay(transform.position, forward, rayColor);
+
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, rayLength))
+        {
+            // Collision détectée
+            Debug.Log("Collision avec : " + hitInfo.collider.name);
+        }
+        else
+        {
+            // Aucune collision détectée
+            Debug.Log("Aucune collision");
         }
     }
 
@@ -68,12 +101,19 @@ public class CarController : MonoBehaviour
             currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 1f);
         }
 
-        if (currentSpeed < 0.01f)
+        if (currentSpeed < 0.1f && Accelerate < 0.1)
         {
             currentSpeed = 0f;
         }
 
         transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
+        RayFollow();
+    }
+
+    private void RayFollow()
+    {
+        ray.origin = transform.position + new Vector3(0, 0.15f, 0);
+        ray.direction = transform.forward;
     }
 
     private void Rotate()
@@ -123,7 +163,7 @@ public class CarController : MonoBehaviour
 
     private void GetAiKeys()
     {
-        double[] outputs = NeuralNetwork.Brain(new double[] { 0, 0, 0, 0, 0 });
+        double[] outputs = NeuralNetwork.Brain(new double[] { currentSpeed, 0, 0, 0, 0, 0 });
         Accelerate = Convert.ToInt32(outputs[0]);
         TurnRight = Convert.ToInt32(outputs[1]);
         TurnLeft = Convert.ToInt32(outputs[2]);
