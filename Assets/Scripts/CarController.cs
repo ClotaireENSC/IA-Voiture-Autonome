@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
@@ -13,7 +14,7 @@ public class CarController : MonoBehaviour
     public int TurnLeft = 0;
     public bool Collision = false;
 
-    public Ray ray;
+    private Ray[] ray;
     private float rayLength;
 
     public NeuralNetwork NeuralNetwork;
@@ -46,16 +47,21 @@ public class CarController : MonoBehaviour
 
         NeuralNetwork = new NeuralNetwork();
 
-        ray = new Ray(transform.position, transform.forward);
-        rayLength = 5f;
+        ray = new Ray[5];
+        for (int i = 0; i < ray.Length; i++)
+        {
+            ray[i] = new Ray();
+        }
+        rayLength = 2f;
     }
 
     void Update()
     {
-        CheckRay();
+        if (Input.GetKey(KeyCode.Space))
+            CheckRay();
 
-        GetUserKeys();
-        // GetAiKeys();
+        // GetUserKeys();
+        GetAiKeys();
 
         if (!Collision)
         {
@@ -66,23 +72,10 @@ public class CarController : MonoBehaviour
 
     public void CheckRay()
     {
-        Vector3 forward = transform.TransformDirection(Vector3.forward) * rayLength;
-
-        Color rayColor = Physics.Raycast(ray, rayLength) ? Color.red : Color.green;
-
-        Debug.DrawRay(transform.position, forward, rayColor);
-
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo, rayLength))
+        for (int i = 0; i < ray.Length; i++)
         {
-            // Collision détectée
-            Debug.Log("Collision avec : " + hitInfo.collider.name);
-        }
-        else
-        {
-            // Aucune collision détectée
-            Debug.Log("Aucune collision");
+            Color rayColor = Physics.Raycast(ray[i], rayLength) ? Color.red : Color.green;
+            Debug.DrawRay(ray[i].origin, ray[i].direction * rayLength, rayColor);
         }
     }
 
@@ -112,8 +105,27 @@ public class CarController : MonoBehaviour
 
     private void RayFollow()
     {
-        ray.origin = transform.position + new Vector3(0, 0.15f, 0);
-        ray.direction = transform.forward;
+        float rayHeight = 0.15f; // Hauteur du rayon par rapport à la position du GameObject
+
+        // Rayon devant
+        ray[0].origin = transform.position + new Vector3(0, rayHeight, 0);
+        ray[0].direction = transform.forward;
+
+        // Rayon à droite
+        ray[1].origin = transform.position + new Vector3(0, rayHeight, 0);
+        ray[1].direction = transform.right;
+
+        // Rayon à gauche
+        ray[2].origin = transform.position + new Vector3(0, rayHeight, 0);
+        ray[2].direction = -transform.right;
+
+        // Rayon Nord Est
+        ray[3].origin = transform.position + new Vector3(0, rayHeight, 0);
+        ray[3].direction = transform.forward + transform.right;
+
+        // Rayon Nord Ouest
+        ray[4].origin = transform.position + new Vector3(0, rayHeight, 0);
+        ray[4].direction = transform.forward - transform.right;
     }
 
     private void Rotate()
@@ -133,7 +145,10 @@ public class CarController : MonoBehaviour
             angle = -angle;
         }
 
-        transform.Rotate(0, Time.deltaTime * angle * 20f / (Mathf.Abs(currentSpeed) + 10f), 0);
+        if (currentSpeed != 0)
+        {
+            transform.Rotate(0, Time.deltaTime * angle * 20f / (Mathf.Abs(currentSpeed) + 10f), 0);
+        }
     }
 
     private void GetUserKeys()
@@ -163,9 +178,23 @@ public class CarController : MonoBehaviour
 
     private void GetAiKeys()
     {
-        double[] outputs = NeuralNetwork.Brain(new double[] { currentSpeed, 0, 0, 0, 0, 0 });
+        double[] inputs = new double[6];
+        inputs[0] = currentSpeed / maxSpeed;
+        for (int i = 1; i < 6; i++)
+        {
+            inputs[i] = (Physics.Raycast(ray[i - 1], rayLength) ? 1 : 0);
+        }
+
+
+        double[] outputs = NeuralNetwork.Brain(inputs);
         Accelerate = Convert.ToInt32(outputs[0]);
         TurnRight = Convert.ToInt32(outputs[1]);
         TurnLeft = Convert.ToInt32(outputs[2]);
+
+
+        string inputsString = "";
+        for (int i = 0; i < 6; i++)
+            inputsString += $"{inputs[i]}/";
+        Debug.Log(inputsString);
     }
 }

@@ -37,7 +37,8 @@ public class Layer
         // Remplir BiasArray avec des valeurs aléatoires entre 1 et 10
         for (int i = 0; i < BiasArray.Length; i++)
         {
-            BiasArray[i] = rnd.NextDouble() * 9 + 1;
+            //BiasArray[i] = rnd.NextDouble() * 9 + 1;
+            BiasArray[i] = rnd.NextDouble() * 2 -1;
         }
     }
 

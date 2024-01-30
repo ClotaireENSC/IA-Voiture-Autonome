@@ -4,7 +4,7 @@ using System.Linq;
 
 public class NeuralNetwork
 {
-    public int[] LayersLengths = { 6, 16, 16, 3 };
+    public int[] LayersLengths = { 6, 32, 32, 32, 3 };
     public List<Layer> Layers = new List<Layer>();
 
     public NeuralNetwork()
