@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -8,8 +9,11 @@ public class CarController : MonoBehaviour
     public float currentSpeed;
     public float maxSpeed = 50;
     private int Accelerate = 0;
-    private int TurnRight = 0;
+    public int TurnRight = 0;
+    public int TurnLeft = 0;
     public bool Collision = false;
+
+    public NeuralNetwork NeuralNetwork;
 
     private void Start()
     {
@@ -34,11 +38,13 @@ public class CarController : MonoBehaviour
     private void InitializeCar()
     {
         currentSpeed = 0;
+        NeuralNetwork = new NeuralNetwork();
     }
 
     void Update()
     {
-        GetUserKeys();
+        //GetUserKeys();
+        GetAiKeys();
 
         if (!Collision)
         {
@@ -55,14 +61,14 @@ public class CarController : MonoBehaviour
         }
         else if (Accelerate < -0.1)
         {
-            currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 1.0f);
+            currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 2f);
         }
         else
         {
-            currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 2f);
+            currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 1f);
         }
 
-        if (currentSpeed<0.01f)
+        if (currentSpeed < 0.01f)
         {
             currentSpeed = 0f;
         }
@@ -75,15 +81,11 @@ public class CarController : MonoBehaviour
         float angle = 0;
         if (TurnRight > 0.1)
         {
-            angle = 90;
+            angle += 90;
         }
-        else if (TurnRight < -0.1)
+        if (TurnLeft > 0.1)
         {
-            angle = -90;
-        }
-        else
-        {
-            angle = 0;
+            angle -= 90;
         }
 
         if (currentSpeed < 0)
@@ -98,6 +100,7 @@ public class CarController : MonoBehaviour
     {
         Accelerate = 0;
         TurnRight = 0;
+        TurnLeft = 0;
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
@@ -110,11 +113,19 @@ public class CarController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            TurnRight -= 1;
+            TurnLeft = 1;
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            TurnRight += 1;
+            TurnRight = 1;
         }
+    }
+
+    private void GetAiKeys()
+    {
+        double[] outputs = NeuralNetwork.Brain(new double[] { 0, 0, 0, 0, 0 });
+        Accelerate = Convert.ToInt32(outputs[0]);
+        TurnRight = Convert.ToInt32(outputs[1]);
+        TurnLeft = Convert.ToInt32(outputs[2]);
     }
 }
