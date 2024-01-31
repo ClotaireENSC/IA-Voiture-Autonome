@@ -10,6 +10,7 @@ public class CarController : MonoBehaviour
     public float currentSpeed;
     public float maxSpeed = 50;
     private int Accelerate = 0;
+    private int Decelerate = 0;
     public int TurnRight = 0;
     public int TurnLeft = 0;
     public bool Collision = false;
@@ -33,6 +34,7 @@ public class CarController : MonoBehaviour
                 collision.gameObject.name == "Guard_2")
             {
                 this.Collision = true;
+                currentSpeed = 0;
             }
             else
             {
@@ -85,7 +87,7 @@ public class CarController : MonoBehaviour
         {
             currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime * 0.1f);
         }
-        else if (Accelerate < -0.1)
+        else if (Decelerate > 0.1)
         {
             currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 2f);
         }
@@ -94,7 +96,7 @@ public class CarController : MonoBehaviour
             currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 1f);
         }
 
-        if (currentSpeed < 0.1f && Accelerate < 0.1)
+        if (currentSpeed < 0.1f && Accelerate < 0.1 && Decelerate < 0.1)
         {
             currentSpeed = 0f;
         }
@@ -154,16 +156,17 @@ public class CarController : MonoBehaviour
     private void GetUserKeys()
     {
         Accelerate = 0;
+        Decelerate = 0;
         TurnRight = 0;
         TurnLeft = 0;
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            Accelerate += 1;
+            Accelerate = 1;
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            Accelerate -= 1;
+            Decelerate = 1;
         }
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -180,21 +183,22 @@ public class CarController : MonoBehaviour
     {
         double[] inputs = new double[6];
         inputs[0] = currentSpeed / maxSpeed;
+
         for (int i = 1; i < 6; i++)
         {
             inputs[i] = (Physics.Raycast(ray[i - 1], rayLength) ? 1 : 0);
         }
 
-
         double[] outputs = NeuralNetwork.Brain(inputs);
         Accelerate = Convert.ToInt32(outputs[0]);
-        TurnRight = Convert.ToInt32(outputs[1]);
-        TurnLeft = Convert.ToInt32(outputs[2]);
+        Decelerate = Convert.ToInt32(outputs[1]);
+        TurnRight = Convert.ToInt32(outputs[2]);
+        TurnLeft = Convert.ToInt32(outputs[3]);
 
 
-        string inputsString = "";
-        for (int i = 0; i < 6; i++)
-            inputsString += $"{inputs[i]}/";
-        Debug.Log(inputsString);
+        //string inputsString = "";
+        //for (int i = 0; i < 6; i++)
+        //    inputsString += $"{inputs[i]}/";
+        //Debug.Log(inputsString);
     }
 }

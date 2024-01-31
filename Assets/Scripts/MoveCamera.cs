@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
+    private GameObject[] cars;
     private GameObject car;
     private Transform car_transform;
     private float distance = 8f;
     private float height = 4f;
     private float rotationDamping = 3f;
+
+    private CarController carController;
 
     private Vector3 rotationVector;
 
@@ -19,11 +22,31 @@ public class MoveCamera : MonoBehaviour
 
     public void FindCar()
     {
-        car = GameObject.FindGameObjectWithTag("Car");
-        if (car != null)
+        cars = GameObject.FindGameObjectsWithTag("Car");
+        if (cars != null)
         {
-            // Si une voiture est trouvée, assigner son transform à la variable "car"
-            car_transform = car.transform;
+            double maxDist = double.MinValue;
+            car = null;
+
+            foreach (GameObject c in cars)
+            {
+                Vector3 pos = c.transform.position;
+
+                double distance = Mathf.Sqrt(pos.x * pos.x + pos.z * pos.z);
+
+                if (distance > maxDist)
+                {
+                    maxDist = distance;
+                    car = c;
+                    car_transform = car.transform;
+                    carController = car.GetComponent<CarController>();
+                }
+            }
+
+            if (car == null)
+            {
+                Debug.LogError("Aucune voiture avec le tag 'Car' trouvée ou aucune vitesse valide.");
+            }
         }
         else
         {
@@ -33,6 +56,7 @@ public class MoveCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        FindCar();
         if (car != null)
         {
             float wantedAngle = rotationVector.y;
@@ -50,13 +74,6 @@ public class MoveCamera : MonoBehaviour
             temp.y = myHeight;
             transform.position = temp;
             transform.LookAt(car_transform);
-        }
-        else
-        {
-            FindCar();
-            transform.position = new Vector3(-38, 5, -60);
-            transform.rotation = new Quaternion(0, 0, 0, 0);
-            transform.Rotate(new Vector3(20, -8, 0));
         }
     }
 
