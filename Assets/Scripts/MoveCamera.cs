@@ -22,6 +22,8 @@ public class MoveCamera : MonoBehaviour
 
     public void FindCar()
     {
+        CarController currentCarController;
+
         cars = GameObject.FindGameObjectsWithTag("Car");
         if (cars != null)
         {
@@ -34,7 +36,9 @@ public class MoveCamera : MonoBehaviour
 
                 double distance = Mathf.Sqrt(pos.x * pos.x + pos.z * pos.z);
 
-                if (distance > maxDist)
+                currentCarController = c.GetComponent<CarController>();
+
+                if (distance > maxDist && !currentCarController.Collision && currentCarController.currentSpeed!=0)
                 {
                     maxDist = distance;
                     car = c;
