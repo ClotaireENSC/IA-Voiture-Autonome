@@ -20,6 +20,8 @@ public class CarController : MonoBehaviour
 
     public NeuralNetwork NeuralNetwork;
 
+    private int score = 0;
+
     private void Start()
     {
         InitializeCar();
@@ -40,6 +42,21 @@ public class CarController : MonoBehaviour
             {
                 this.Collision = false;
             }
+
+            
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Checkpoint")
+        {
+            score++;
+            Debug.Log("Checkpoint Passed! Total: " + score);
+        }
+        else
+        {
+            Debug.Log("Collided with: " + other.gameObject.name);
         }
     }
 
@@ -62,7 +79,7 @@ public class CarController : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
             CheckRay();
 
-        // GetUserKeys();
+        //GetUserKeys();
         GetAiKeys();
 
         if (!Collision)
@@ -74,9 +91,12 @@ public class CarController : MonoBehaviour
 
     public void CheckRay()
     {
+        int layerMask = 1 << LayerMask.NameToLayer("Checkpoints");
+        layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
+
         for (int i = 0; i < ray.Length; i++)
         {
-            Color rayColor = Physics.Raycast(ray[i], rayLength) ? Color.red : Color.green;
+            Color rayColor = Physics.Raycast(ray[i], rayLength, ~layerMask) ? Color.red : Color.green;
             Debug.DrawRay(ray[i].origin, ray[i].direction * rayLength, rayColor);
         }
     }
@@ -184,9 +204,12 @@ public class CarController : MonoBehaviour
         double[] inputs = new double[6];
         inputs[0] = currentSpeed / maxSpeed;
 
+        int layerMask = 1 << LayerMask.NameToLayer("Checkpoints");
+        layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
+
         for (int i = 1; i < 6; i++)
         {
-            inputs[i] = (Physics.Raycast(ray[i - 1], rayLength) ? 1 : 0);
+            inputs[i] = (Physics.Raycast(ray[i - 1], rayLength, ~layerMask) ? 1 : 0);
         }
 
         double[] outputs = NeuralNetwork.Brain(inputs);

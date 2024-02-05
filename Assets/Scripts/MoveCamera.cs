@@ -38,7 +38,7 @@ public class MoveCamera : MonoBehaviour
 
                 currentCarController = c.GetComponent<CarController>();
 
-                if (distance > maxDist && !currentCarController.Collision && currentCarController.currentSpeed!=0)
+                if (distance > maxDist && !currentCarController.Collision)
                 {
                     maxDist = distance;
                     car = c;
@@ -50,6 +50,7 @@ public class MoveCamera : MonoBehaviour
             if (car == null)
             {
                 Debug.LogError("Aucune voiture avec le tag 'Car' trouvée ou aucune vitesse valide.");
+                Debug.Break();
             }
         }
         else
