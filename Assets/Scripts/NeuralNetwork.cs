@@ -69,6 +69,11 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
+    public void Mutate()
+    { 
+    
+    }
+
     public override string ToString()
     {
         string outString = "";

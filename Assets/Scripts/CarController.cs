@@ -54,11 +54,6 @@ public class CarController : MonoBehaviour
         if (other.gameObject.tag == "Checkpoint")
         {
             score++;
-            Debug.Log("Checkpoint Passed! Total: " + score);
-        }
-        else
-        {
-            Debug.Log("Collided with: " + other.gameObject.name);
         }
     }
 
