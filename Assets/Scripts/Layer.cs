@@ -1,4 +1,5 @@
 using System;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Layer
 {
@@ -23,6 +24,22 @@ public class Layer
 
     public void Init()
     {
+        for (int i = 0; i < WeightArray.GetLength(0); i++)
+        {
+            for (int j = 0; j < WeightArray.GetLength(1); j++)
+            {
+                WeightArray[i, j] = 0;
+            }
+        }
+
+        for (int i = 0; i < BiasArray.Length; i++)
+        {
+            BiasArray[i] = 0;
+        }
+    }
+
+    public void Randomize()
+    {
         Random rnd = new Random();
 
         // Remplir WeightArray avec des valeurs aléatoires entre -1 et 1
@@ -38,7 +55,7 @@ public class Layer
         for (int i = 0; i < BiasArray.Length; i++)
         {
             //BiasArray[i] = rnd.NextDouble() * 9 + 1;
-            BiasArray[i] = rnd.NextDouble() * 2 -1;
+            BiasArray[i] = rnd.NextDouble() * 2 - 1;
         }
     }
 
@@ -86,6 +103,34 @@ public class Layer
             else
             {
                 NodeArray[i] = 1;
+            }
+        }
+    }
+
+    public void Mutate(double mutationRate = 0.1, double mutationRange = 0.5)
+    {
+        Random rand = new Random();
+
+        // Mutate weights
+        for (int i = 0; i < WeightArray.GetLength(0); i++)
+        {
+            for (int j = 0; j < WeightArray.GetLength(1); j++)
+            {
+                if (rand.NextDouble() < mutationRate)
+                {
+                    // Add random noise within mutationRange to the weight
+                    WeightArray[i, j] += (2 * rand.NextDouble() - 1) * mutationRange;
+                }
+            }
+        }
+
+        // Mutate biases
+        for (int i = 0; i < BiasArray.Length; i++)
+        {
+            if (rand.NextDouble() < mutationRate)
+            {
+                // Add random noise within mutationRange to the bias
+                BiasArray[i] += (2 * rand.NextDouble() - 1) * mutationRange;
             }
         }
     }

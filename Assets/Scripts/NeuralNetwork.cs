@@ -4,11 +4,14 @@ using System.Linq;
 
 public class NeuralNetwork
 {
+    private static int NextId=0;
+    public int id;
     public int[] LayersLengths = { 6, 32, 4 };
     public List<Layer> Layers = new List<Layer>();
 
     public NeuralNetwork()
     {
+        id = NextId++;
         for (int i = 0; i < LayersLengths.Length - 1; i++)
         {
             Layers.Add(new Layer(LayersLengths[i], LayersLengths[i + 1]));
@@ -17,6 +20,7 @@ public class NeuralNetwork
 
     public NeuralNetwork(NeuralNetwork original_NN)
     {
+        id = NextId++;
         LayersLengths = original_NN.LayersLengths;
 
         foreach (Layer original_NNLayer in original_NN.Layers)
@@ -39,6 +43,14 @@ public class NeuralNetwork
             }
 
             Layers.Add(newLayer);
+        }
+    }
+
+    public void RAZ()
+    {
+        foreach (Layer layer in Layers)
+        {
+            layer.Init();
         }
     }
 
@@ -69,37 +81,22 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
-    public void Mutate(double mutationRate = 0.1, double mutationRange = 0.5)
+    public void Mutate(double mutationRate = 1, double mutationRange = 0.5)
     {
-        Random rand = new Random();
 
         foreach (Layer layer in Layers)
         {
-            // Mutate weights
-            for (int i = 0; i < layer.WeightArray.GetLength(0); i++)
-            {
-                for (int j = 0; j < layer.WeightArray.GetLength(1); j++)
-                {
-                    if (rand.NextDouble() < mutationRate)
-                    {
-                        // Add random noise within mutationRange to the weight
-                        layer.WeightArray[i, j] += (2 * rand.NextDouble() - 1) * mutationRange;
-                    }
-                }
-            }
-
-            // Mutate biases
-            for (int i = 0; i < layer.BiasArray.Length; i++)
-            {
-                if (rand.NextDouble() < mutationRate)
-                {
-                    // Add random noise within mutationRange to the bias
-                    layer.BiasArray[i] += (2 * rand.NextDouble() - 1) * mutationRange;
-                }
-            }
+            layer.Mutate(mutationRate,mutationRange);
         }
     }
 
+    public void Randomize()
+    {
+        foreach (Layer layer in Layers)
+        { 
+            layer.Randomize(); 
+        }
+    }
 
     public override string ToString()
     {

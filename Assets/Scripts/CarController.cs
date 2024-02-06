@@ -29,6 +29,20 @@ public class CarController : MonoBehaviour
         InitializeCar();
     }
 
+    private void InitializeCar()
+    {
+        currentSpeed = 0;
+
+        ray = new Ray[5];
+        for (int i = 0; i < ray.Length; i++)
+        {
+            ray[i] = new Ray();
+        }
+        rayLength = 2f;
+
+        scoreText = GetComponentInChildren<TextMeshPro>();
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!Collision)
@@ -57,21 +71,6 @@ public class CarController : MonoBehaviour
         }
     }
 
-    private void InitializeCar()
-    {
-        currentSpeed = 0;
-
-        NeuralNetwork = new NeuralNetwork();
-
-        ray = new Ray[5];
-        for (int i = 0; i < ray.Length; i++)
-        {
-            ray[i] = new Ray();
-        }
-        rayLength = 2f;
-
-        scoreText = GetComponentInChildren<TextMeshPro>();
-    }
 
     void Update()
     {
@@ -80,6 +79,8 @@ public class CarController : MonoBehaviour
 
         //GetUserKeys();
         GetAiKeys();
+
+        ShowText();
 
         if (!Collision)
         {
@@ -226,9 +227,6 @@ public class CarController : MonoBehaviour
 
     public void ShowText()
     {
-        if (scoreText != null)
-        {
-            scoreText.text = "Score: " + score.ToString("F2");
-        }
+        scoreText.text = "Score: " + score.ToString("F2");
     }
 }
