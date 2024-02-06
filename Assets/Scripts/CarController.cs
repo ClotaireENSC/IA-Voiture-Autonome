@@ -20,7 +20,9 @@ public class CarController : MonoBehaviour
 
     public NeuralNetwork NeuralNetwork;
 
-    private int score = 0;
+    public int score = 0;
+
+    public TextMeshPro scoreText;
 
     private void Start()
     {
@@ -72,6 +74,8 @@ public class CarController : MonoBehaviour
             ray[i] = new Ray();
         }
         rayLength = 2f;
+
+        scoreText = GetComponentInChildren<TextMeshPro>();
     }
 
     void Update()
@@ -223,5 +227,13 @@ public class CarController : MonoBehaviour
         //for (int i = 0; i < 6; i++)
         //    inputsString += $"{inputs[i]}/";
         //Debug.Log(inputsString);
+    }
+
+    public void ShowText()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + score.ToString("F2");
+        }
     }
 }

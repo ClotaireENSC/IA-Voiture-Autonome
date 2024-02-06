@@ -27,20 +27,18 @@ public class MoveCamera : MonoBehaviour
         cars = GameObject.FindGameObjectsWithTag("Car");
         if (cars != null)
         {
-            double maxDist = double.MinValue;
+            int maxScore = -1;
             car = null;
 
             foreach (GameObject c in cars)
             {
                 Vector3 pos = c.transform.position;
 
-                double distance = Mathf.Sqrt(pos.x * pos.x + pos.z * pos.z);
-
                 currentCarController = c.GetComponent<CarController>();
 
-                if (distance > maxDist && !currentCarController.Collision)
+                if (currentCarController.score > maxScore)
                 {
-                    maxDist = distance;
+                    maxScore = currentCarController.score;
                     car = c;
                     car_transform = car.transform;
                     carController = car.GetComponent<CarController>();
@@ -50,7 +48,6 @@ public class MoveCamera : MonoBehaviour
             if (car == null)
             {
                 Debug.LogError("Aucune voiture avec le tag 'Car' trouvée ou aucune vitesse valide.");
-                Debug.Break();
             }
         }
         else
