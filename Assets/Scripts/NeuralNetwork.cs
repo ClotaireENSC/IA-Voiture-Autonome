@@ -4,7 +4,7 @@ using System.Linq;
 
 public class NeuralNetwork
 {
-    private static int NextId=0;
+    private static int NextId = 0;
     public int id;
     public int[] LayersLengths = { 6, 32, 4 };
     public List<Layer> Layers = new List<Layer>();
@@ -86,15 +86,15 @@ public class NeuralNetwork
 
         foreach (Layer layer in Layers)
         {
-            layer.Mutate(mutationRate,mutationRange);
+            layer.Mutate(mutationRate, mutationRange);
         }
     }
 
     public void Randomize()
     {
         foreach (Layer layer in Layers)
-        { 
-            layer.Randomize(); 
+        {
+            layer.Randomize();
         }
     }
 

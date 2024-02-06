@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Simulation : MonoBehaviour
@@ -9,7 +10,7 @@ public class Simulation : MonoBehaviour
     private NeuralNetwork[] NeuralNetworks;
     private GameObject[] CarsInstances;
 
-    private double SimulationTime = 10;
+    private double SimulationTime = 60;
     private double currentSimulationTime;
 
     public int nbCars = 50;
@@ -49,14 +50,12 @@ public class Simulation : MonoBehaviour
             StartSimulation();
         }
 
-        if (currentSimulationTime > SimulationTime)
+        if (currentSimulationTime > SimulationTime || AllCarCrashed() || Input.GetKey(KeyCode.RightArrow))
         {
             GoNextGeneration();
         }
 
         currentSimulationTime += Time.deltaTime;
-
-
     }
 
     public void GoNextGeneration()
@@ -92,11 +91,13 @@ public class Simulation : MonoBehaviour
     {
         NeuralNetwork[] NewNeuralNetworks = new NeuralNetwork[nbCars];
 
+        int NbDixieme = nbCars / 10;
+
         for (int i = 0; i < 10; i++)
         {
-            for (int j = 1; j <= nbCars / 10; j++)
+            for (int j = 1; j <= NbDixieme; j++)
             {
-                NewNeuralNetworks[10 * i + j - 1] = new NeuralNetwork(NeuralNetworks[i]);
+                NewNeuralNetworks[NbDixieme * i + j - 1] = new NeuralNetwork(NeuralNetworks[i]);
             }
         }
 
@@ -117,5 +118,19 @@ public class Simulation : MonoBehaviour
                 Destroy(c);
             }
         }
+    }
+
+    public bool AllCarCrashed()
+    {
+        if (CarsInstances[0] != null)
+        {
+            foreach (GameObject c in CarsInstances)
+            {
+                if (!c.GetComponent<CarController>().Collision)
+                    return false;
+            }
+            return true;
+        }
+        return false;
     }
 }

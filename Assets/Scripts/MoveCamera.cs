@@ -37,7 +37,7 @@ public class MoveCamera : MonoBehaviour
                 currentCarController = c.GetComponent<CarController>();
 
                 // Si la voiture a un score plus élevé, ou si son score est le même mais elle est plus éloignée de (0,0,0)
-                if (currentCarController.score > maxScore || (currentCarController.score == maxScore && pos.magnitude > maxDistance))
+                if (!currentCarController.Collision && currentCarController.score > maxScore || (currentCarController.score == maxScore && pos.magnitude > maxDistance))
                 {
                     maxScore = currentCarController.score;
                     car = c;

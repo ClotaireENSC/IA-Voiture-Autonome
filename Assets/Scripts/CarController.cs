@@ -59,7 +59,7 @@ public class CarController : MonoBehaviour
                 this.Collision = false;
             }
 
-            
+
         }
     }
 
@@ -75,7 +75,9 @@ public class CarController : MonoBehaviour
     void Update()
     {
         if (Input.GetKey(KeyCode.Space))
+        {
             CheckRay();
+        }
 
         //GetUserKeys();
         GetAiKeys();
@@ -116,7 +118,7 @@ public class CarController : MonoBehaviour
             currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime * 1f);
         }
 
-        if (currentSpeed < 0.1f && Accelerate < 0.1 && Decelerate < 0.1)
+        if (currentSpeed < 0.1f && Accelerate < 0.1)
         {
             currentSpeed = 0f;
         }
@@ -227,6 +229,9 @@ public class CarController : MonoBehaviour
 
     public void ShowText()
     {
-        scoreText.text = "Score: " + score.ToString("F2");
+        if (Input.GetKey(KeyCode.Space))
+            scoreText.text = "Score: " + score.ToString("F2");
+        else
+            scoreText.text = "";
     }
 }
