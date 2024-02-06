@@ -69,10 +69,37 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
-    public void Mutate()
-    { 
-    
+    public void Mutate(double mutationRate = 0.1, double mutationRange = 0.5)
+    {
+        Random rand = new Random();
+
+        foreach (Layer layer in Layers)
+        {
+            // Mutate weights
+            for (int i = 0; i < layer.WeightArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < layer.WeightArray.GetLength(1); j++)
+                {
+                    if (rand.NextDouble() < mutationRate)
+                    {
+                        // Add random noise within mutationRange to the weight
+                        layer.WeightArray[i, j] += (2 * rand.NextDouble() - 1) * mutationRange;
+                    }
+                }
+            }
+
+            // Mutate biases
+            for (int i = 0; i < layer.BiasArray.Length; i++)
+            {
+                if (rand.NextDouble() < mutationRate)
+                {
+                    // Add random noise within mutationRange to the bias
+                    layer.BiasArray[i] += (2 * rand.NextDouble() - 1) * mutationRange;
+                }
+            }
+        }
     }
+
 
     public override string ToString()
     {

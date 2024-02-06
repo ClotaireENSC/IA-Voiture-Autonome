@@ -8,7 +8,8 @@ public class Simulation : MonoBehaviour
     private GameObject[] Cars;
     private GameObject[] CarsInstances;
 
-    private double SimulationTime;
+    private double SimulationTime = 10;
+    private double currentSimulationTime;
 
     public int nbCars = 50;
 
@@ -20,19 +21,20 @@ public class Simulation : MonoBehaviour
 
     public void StartSimulation()
     {
-        for (int i =0; i<nbCars;i++)
+        for (int i = 0; i < nbCars; i++)
         {
             Cars[i] = CarPrefab;
         }
 
         InstantiateCars();
-        SimulationTime = 0;
+        currentSimulationTime = 0;
     }
 
     public void Simulate()
     {
+        DestroyCars();
         InstantiateCars();
-        SimulationTime = 0;
+        currentSimulationTime = 0;
     }
 
     public void InstantiateCars()
@@ -51,31 +53,62 @@ public class Simulation : MonoBehaviour
             StartSimulation();
         }
 
-        if (SimulationTime > 15)
+        if (currentSimulationTime > SimulationTime)
         {
             GoNextGeneration();
         }
 
-        SimulationTime += Time.deltaTime;
+        currentSimulationTime += Time.deltaTime;
     }
 
     public void GoNextGeneration()
     {
-        MutateCars();
+        //SortCars();
+        GenerateNewCars();
         Simulate();
     }
 
-    public void MutateCars()
+    public void SortCars()
     {
+        // Créer une liste temporaire pour stocker les paires (GameObject, score)
+        List<KeyValuePair<GameObject, int>> carScores = new List<KeyValuePair<GameObject, int>>();
+
+        // Remplir la liste temporaire avec les voitures et leurs scores
+        for (int i = 0; i < nbCars; i++)
+        {
+            carScores.Add(new KeyValuePair<GameObject, int>(Cars[i], Cars[i].GetComponent<CarController>().score));
+        }
+
+        // Trier la liste en fonction des scores (ordre décroissant)
+        carScores.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+        // Mettre à jour la liste des voitures dans l'ordre trié
+        for (int i = 0; i < nbCars; i++)
+        {
+            Cars[i] = carScores[i].Key;
+        }
+    }
+
+
+    public void GenerateNewCars()
+    {
+        //CarController carController;
         GameObject[] NewCars = new GameObject[nbCars];
 
-        // Ajouter les meilleures voitures � la liste et les dupliquer
-
-        foreach(GameObject c in Cars)
+        for (int j = 1; j <= nbCars / 10; j++)
         {
-            CarController carController = c.GetComponent<CarController>();
-            carController.NeuralNetwork.Mutate();
+            for (int k = 0; k < 10; k++)
+            {
+                NewCars[j + 10 * k - 1] = Cars[0];
+            }
         }
+
+        //foreach (GameObject c in NewCars)
+        //{
+        //    carController = c.GetComponent<CarController>();
+        //}
+
+        Cars = NewCars;
     }
 
     public void DestroyCars()
