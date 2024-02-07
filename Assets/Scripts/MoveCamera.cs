@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
-    private GameObject[] cars;
+    public GameObject[] cars;
     private GameObject car;
     private Transform car_transform;
     private float distance = 8f;
@@ -17,10 +17,9 @@ public class MoveCamera : MonoBehaviour
 
     public void Start()
     {
-        FindCar();
     }
 
-    public void FindCar()
+    public void FindBestCar()
     {
         CarController currentCarController;
         float maxDistance = 0f;
@@ -36,7 +35,6 @@ public class MoveCamera : MonoBehaviour
 
                 currentCarController = c.GetComponent<CarController>();
 
-                // Si la voiture a un score plus élevé, ou si son score est le même mais elle est plus éloignée de (0,0,0)
                 if (!currentCarController.Collision && currentCarController.score > maxScore || (currentCarController.score == maxScore && pos.magnitude > maxDistance))
                 {
                     maxScore = currentCarController.score;
@@ -61,7 +59,8 @@ public class MoveCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        FindCar();
+        FindBestCar();
+
         if (car != null)
         {
             float wantedAngle = rotationVector.y;
@@ -94,7 +93,7 @@ public class MoveCamera : MonoBehaviour
         }
         else
         {
-            Start();
+            FindBestCar();
         }
     }
 }

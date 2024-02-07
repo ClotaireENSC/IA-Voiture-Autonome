@@ -23,6 +23,7 @@ public class CarController : MonoBehaviour
     public int score = 0;
 
     public TextMeshPro scoreText;
+    public TextMeshPro speedText;
 
     private void Start()
     {
@@ -38,9 +39,10 @@ public class CarController : MonoBehaviour
         {
             ray[i] = new Ray();
         }
-        rayLength = 2f;
+        rayLength = 10f;
 
         scoreText = GetComponentInChildren<TextMeshPro>();
+        speedText = GetComponentInChildren<TextMeshPro>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -209,9 +211,19 @@ public class CarController : MonoBehaviour
         int layerMask = 1 << LayerMask.NameToLayer("Checkpoints");
         layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
 
+        RaycastHit hitInfo;
         for (int i = 1; i < 6; i++)
         {
-            inputs[i] = (Physics.Raycast(ray[i - 1], rayLength, ~layerMask) ? 1 : 0);
+            if (Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask))
+            {
+                // Assign the distance of the collision to the input
+                inputs[i] = hitInfo.distance / rayLength;
+            }
+            else
+            {
+                // If no collision, assign a default value (e.g., maximum distance)
+                inputs[i] = 1; // You may want to adjust this value based on your game's requirements
+            }
         }
 
         double[] outputs = NeuralNetwork.Brain(inputs);
@@ -230,8 +242,14 @@ public class CarController : MonoBehaviour
     public void ShowText()
     {
         if (Input.GetKey(KeyCode.Space))
-            scoreText.text = "Score: " + score.ToString("F2");
+        {
+            scoreText.text = score.ToString("F2");
+            speedText.text = currentSpeed.ToString("F2");
+        }
         else
+        {
             scoreText.text = "";
+            speedText.text = "";
+        }
     }
 }

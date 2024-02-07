@@ -15,6 +15,8 @@ public class Simulation : MonoBehaviour
 
     public int nbCars = 50;
 
+    public GameObject Camera;
+
     public void Start()
     {
         NeuralNetworks = new NeuralNetwork[nbCars];
@@ -25,12 +27,15 @@ public class Simulation : MonoBehaviour
             NeuralNetworks[i] = new NeuralNetwork();
             NeuralNetworks[i].Randomize();
         }
+
+        StartSimulation();
     }
 
     public void StartSimulation()
     {
         InstantiateCars(NeuralNetworks);
         currentSimulationTime = 0;
+        Camera.GetComponent<MoveCamera>().Start();
     }
 
     public void InstantiateCars(NeuralNetwork[] neuralNetworks)
@@ -44,13 +49,13 @@ public class Simulation : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKey(KeyCode.R) && currentSimulationTime > 2)
         {
             DestroyCars();
-            StartSimulation();
+            Start();
         }
 
-        if (currentSimulationTime > SimulationTime || AllCarCrashed() || Input.GetKey(KeyCode.RightArrow))
+        if (currentSimulationTime > SimulationTime || AllCarStopped() || Input.GetKey(KeyCode.RightArrow) && currentSimulationTime > 2)
         {
             GoNextGeneration();
         }
@@ -120,16 +125,17 @@ public class Simulation : MonoBehaviour
         }
     }
 
-    public bool AllCarCrashed()
+    public bool AllCarStopped()
     {
         if (CarsInstances[0] != null)
         {
             foreach (GameObject c in CarsInstances)
             {
-                if (!c.GetComponent<CarController>().Collision)
+                if (c.GetComponent<CarController>().currentSpeed > 0.09f)
                     return false;
             }
-            return true;
+            if (currentSimulationTime > 2)
+                return true;
         }
         return false;
     }
