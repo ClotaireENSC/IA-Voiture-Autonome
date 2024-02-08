@@ -567,13 +567,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSpeed: 0
-  maxSpeed: 100
+  maxSpeed: 50
   TurnRight: 0
   TurnLeft: 0
   Collision: 0
   score: 0
   scoreText: {fileID: 0}
-  speedText: {fileID: 0}
 --- !u!23 &5006611578105398754
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public class CarController : MonoBehaviour
     public bool Collision = false;
 
     private Ray[] ray;
-    private float rayLength = 5f;
+    private float rayLength = 10f;
 
     public NeuralNetwork NeuralNetwork;
 

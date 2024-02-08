@@ -17,6 +17,8 @@ public class Simulation : MonoBehaviour
 
     public GameObject Camera;
 
+    private int NumeroGeneration = 1;
+
     public void Start()
     {
         NeuralNetworks = new NeuralNetwork[nbCars];
@@ -34,6 +36,7 @@ public class Simulation : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.R) && currentSimulationTime > 2)
         {
+            NumeroGeneration = 0;
             DestroyCars();
             Start();
         }
@@ -51,6 +54,7 @@ public class Simulation : MonoBehaviour
         InstantiateCars(NeuralNetworks);
         currentSimulationTime = 0;
         ResetCamera();
+        Debug.Log($"Génération : {NumeroGeneration++}");
     }
 
     public void InstantiateCars(NeuralNetwork[] neuralNetworks)
