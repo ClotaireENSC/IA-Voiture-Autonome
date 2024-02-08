@@ -130,7 +130,7 @@ public class Simulation : MonoBehaviour
         {
             foreach (GameObject c in CarsInstances)
             {
-                if (c.GetComponent<CarController>().currentSpeed > 0.09f)
+                if (c.GetComponent<CarController>().currentSpeed > 0.09f && c.GetComponent<CarController>().score>0)
                     return false;
             }
             if (currentSimulationTime > 2)

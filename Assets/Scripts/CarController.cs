@@ -16,14 +16,13 @@ public class CarController : MonoBehaviour
     public bool Collision = false;
 
     private Ray[] ray;
-    private float rayLength;
+    private float rayLength = 5f;
 
     public NeuralNetwork NeuralNetwork;
 
     public int score = 0;
 
     public TextMeshPro scoreText;
-    public TextMeshPro speedText;
 
     private void Start()
     {
@@ -39,10 +38,8 @@ public class CarController : MonoBehaviour
         {
             ray[i] = new Ray();
         }
-        rayLength = 5f;
 
         scoreText = GetComponentInChildren<TextMeshPro>();
-        speedText = GetComponentInChildren<TextMeshPro>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -67,19 +64,28 @@ public class CarController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Checkpoint")
+        if (other.gameObject.CompareTag("Checkpoint"))
         {
-            score++;
+            if (IsSameDirection(transform.forward, other.transform.forward))
+            {
+                score++;
+            }
+            else
+            {
+                score--;
+            }
         }
+    }
+
+    private bool IsSameDirection(Vector3 direction1, Vector3 direction2)
+    {
+        return Vector3.Dot(direction1.normalized, direction2.normalized) > 0.9f;
     }
 
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            CheckRay();
-        }
+        CheckRay();
 
         //GetUserKeys();
         GetAiKeys();
@@ -243,13 +249,11 @@ public class CarController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            scoreText.text = score.ToString("F2");
-            speedText.text = currentSpeed.ToString("F2");
+            scoreText.text = score.ToString("F0");
         }
         else
         {
             scoreText.text = "";
-            speedText.text = "";
         }
     }
 }

@@ -24,31 +24,50 @@ public class MoveCamera : MonoBehaviour
         car = cars[0];
     }
 
-    public void FindBestCar()
+    //public void FindBestCar()
+    //{
+    //    if (cars == null) { return; }
+
+    //    CarController carController = car.GetComponent<CarController>();
+
+    //    GameObject[] tempCars = cars
+    //        .Where(c => c.GetComponent<CarController>().currentSpeed>0.01f)
+    //        .OrderBy(c => c.GetComponent<CarController>().score)
+    //        .ToArray();
+
+    //    if (!tempCars.Contains(car))
+    //    {
+    //        car = tempCars.Last();
+    //    }
+    //}
+
+    public GameObject FindBestCar()
     {
-        if (cars == null) { return; }
+        // Les vivantes triées par score croissant
+        GameObject[] temp = cars.Where(c => c.GetComponent<CarController>().currentSpeed > 0.01).OrderBy(c => c.GetComponent<CarController>().score).ToArray();
 
-        CarController carController = car.GetComponent<CarController>();
+        if (temp.Length == 0) return null; // Plus de vivantes
 
-        GameObject[] tempCars = cars
-            .Where(c => c.GetComponent<CarController>().currentSpeed>0.01f)
-            .OrderBy(c => c.GetComponent<CarController>().score)
-            .ToArray();
-        
-        if (!tempCars.Contains(car))
-        {
-            car = tempCars.Last();
-        }
+        GameObject last = temp.Last(); // La meilleure en vie
+
+        if (car == null) return last; // Pas de best (premier round), on prend la dernière
+
+        // Best est vivante
+        if (temp.Contains(car))
+            return car.GetComponent<CarController>().score >= last.GetComponent<CarController>().score ? car : last; // Retourne meilleure entre best et dernière
+
+        // Best est morte donc dernière
+        return last;
     }
 
     void LateUpdate()
     {
-        FindBestCar();
-
-        Transform car_transform = car.transform;
+        car = FindBestCar();
 
         if (car != null)
         {
+            Transform car_transform = car.transform;
+
             float wantedAngle = rotationVector.y;
             float wantedHeight = car_transform.position.y + height;
             float myAngle = transform.eulerAngles.y;
@@ -58,6 +77,7 @@ public class MoveCamera : MonoBehaviour
             myHeight = Mathf.Lerp(myHeight, wantedHeight, rotationDamping * Time.deltaTime);
 
             Quaternion currentRotation = Quaternion.Euler(0, myAngle, 0);
+
             transform.position = car_transform.position;
             transform.position -= currentRotation * Vector3.forward * distance;
             Vector3 temp = transform.position;
@@ -69,19 +89,15 @@ public class MoveCamera : MonoBehaviour
 
     void FixedUpdate()
     {
-        Transform car_transform = car.transform;
-
         if (car != null)
         {
+            Transform car_transform = car.transform;
+
             float acc = car_transform.GetComponent<Rigidbody>().velocity.magnitude;
-            // Vous pouvez modifier le comportement de la rotationVector ici en fonction de vos besoins
+
             Vector3 temp = rotationVector;
             temp.y = car_transform.eulerAngles.y;
             rotationVector = temp;
-        }
-        else
-        {
-            FindBestCar();
         }
     }
 }
