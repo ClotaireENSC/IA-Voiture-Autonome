@@ -30,23 +30,6 @@ public class Simulation : MonoBehaviour
 
         StartSimulation();
     }
-
-    public void StartSimulation()
-    {
-        InstantiateCars(NeuralNetworks);
-        currentSimulationTime = 0;
-        Camera.GetComponent<MoveCamera>().Start();
-    }
-
-    public void InstantiateCars(NeuralNetwork[] neuralNetworks)
-    {
-        for (int i = 0; i < nbCars; i++)
-        {
-            CarsInstances[i] = Instantiate(CarPrefab, new Vector3(0, 1, 0), Quaternion.Euler(0, 180, 0));
-            CarsInstances[i].GetComponent<CarController>().NeuralNetwork = neuralNetworks[i];
-        }
-    }
-
     public void Update()
     {
         if (Input.GetKey(KeyCode.R) && currentSimulationTime > 2)
@@ -61,6 +44,22 @@ public class Simulation : MonoBehaviour
         }
 
         currentSimulationTime += Time.deltaTime;
+    }
+
+    public void StartSimulation()
+    {
+        InstantiateCars(NeuralNetworks);
+        currentSimulationTime = 0;
+        ResetCamera();
+    }
+
+    public void InstantiateCars(NeuralNetwork[] neuralNetworks)
+    {
+        for (int i = 0; i < nbCars; i++)
+        {
+            CarsInstances[i] = Instantiate(CarPrefab, new Vector3(0, 1, 0), Quaternion.Euler(0, 180, 0));
+            CarsInstances[i].GetComponent<CarController>().NeuralNetwork = neuralNetworks[i];
+        }
     }
 
     public void GoNextGeneration()
@@ -120,7 +119,7 @@ public class Simulation : MonoBehaviour
         {
             foreach (GameObject c in CarsInstances)
             {
-                Destroy(c);
+                DestroyImmediate(c);
             }
         }
     }
@@ -138,5 +137,10 @@ public class Simulation : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public void ResetCamera()
+    {
+        Camera.GetComponent<MoveCamera>().Init();
     }
 }

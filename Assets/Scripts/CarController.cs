@@ -39,7 +39,7 @@ public class CarController : MonoBehaviour
         {
             ray[i] = new Ray();
         }
-        rayLength = 10f;
+        rayLength = 5f;
 
         scoreText = GetComponentInChildren<TextMeshPro>();
         speedText = GetComponentInChildren<TextMeshPro>();

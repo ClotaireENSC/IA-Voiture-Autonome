@@ -1,65 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
     public GameObject[] cars;
     private GameObject car;
-    private Transform car_transform;
     private float distance = 8f;
     private float height = 4f;
     private float rotationDamping = 3f;
-
-    private CarController carController = null!;
 
     private Vector3 rotationVector;
 
     public void Start()
     {
+        Init();
+    }
+
+    public void Init()
+    {
+        cars = GameObject.FindGameObjectsWithTag("Car");
+        car = cars[0];
     }
 
     public void FindBestCar()
     {
-        CarController currentCarController;
-        float maxDistance = 0f;
+        if (cars == null) { return; }
 
-        cars = GameObject.FindGameObjectsWithTag("Car");
-        if (cars != null)
+        CarController carController = car.GetComponent<CarController>();
+
+        GameObject[] tempCars = cars
+            .Where(c => c.GetComponent<CarController>().currentSpeed>0.01f)
+            .OrderBy(c => c.GetComponent<CarController>().score)
+            .ToArray();
+        
+        if (!tempCars.Contains(car))
         {
-            int maxScore = -1;
-
-            foreach (GameObject c in cars)
-            {
-                Vector3 pos = c.transform.position;
-
-                currentCarController = c.GetComponent<CarController>();
-
-                if (!currentCarController.Collision && currentCarController.score > maxScore || (currentCarController.score == maxScore && pos.magnitude > maxDistance))
-                {
-                    maxScore = currentCarController.score;
-                    car = c;
-                    maxDistance = pos.magnitude;
-                    car_transform = car.transform;
-                    carController = car.GetComponent<CarController>();
-                }
-            }
-
-            if (car == null)
-            {
-                Debug.Log("Aucune voiture avec le tag 'Car' trouvée ou aucune vitesse valide.");
-            }
-        }
-        else
-        {
-            Debug.Log("Aucune voiture avec le tag 'Car' trouvée.");
+            car = tempCars.Last();
         }
     }
-
 
     void LateUpdate()
     {
         FindBestCar();
+
+        Transform car_transform = car.transform;
 
         if (car != null)
         {
@@ -83,6 +69,8 @@ public class MoveCamera : MonoBehaviour
 
     void FixedUpdate()
     {
+        Transform car_transform = car.transform;
+
         if (car != null)
         {
             float acc = car_transform.GetComponent<Rigidbody>().velocity.magnitude;
