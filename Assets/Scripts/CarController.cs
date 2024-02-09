@@ -16,7 +16,7 @@ public class CarController : MonoBehaviour
     public bool Collision = false;
 
     private Ray[] ray;
-    private float rayLength = 10f;
+    private float rayLength = 30f;
 
     public NeuralNetwork NeuralNetwork;
 
@@ -137,17 +137,17 @@ public class CarController : MonoBehaviour
 
     private void RayFollow()
     {
-        float rayHeight = 0.15f; // Hauteur du rayon par rapport à la position du GameObject
+        float rayHeight = 0.15f; // Hauteur du rayon par rapport ï¿½ la position du GameObject
 
         // Rayon devant
         ray[0].origin = transform.position + new Vector3(0, rayHeight, 0);
         ray[0].direction = transform.forward;
 
-        // Rayon à droite
+        // Rayon ï¿½ droite
         ray[1].origin = transform.position + new Vector3(0, rayHeight, 0);
         ray[1].direction = transform.right;
 
-        // Rayon à gauche
+        // Rayon ï¿½ gauche
         ray[2].origin = transform.position + new Vector3(0, rayHeight, 0);
         ray[2].direction = -transform.right;
 
@@ -218,6 +218,7 @@ public class CarController : MonoBehaviour
         layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
 
         RaycastHit hitInfo;
+        
         for (int i = 1; i < 6; i++)
         {
             if (Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask))

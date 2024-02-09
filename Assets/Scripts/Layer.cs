@@ -42,7 +42,7 @@ public class Layer
     {
         Random rnd = new Random();
 
-        // Remplir WeightArray avec des valeurs aléatoires entre -1 et 1
+        // Remplir WeightArray avec des valeurs alï¿½atoires entre -1 et 1
         for (int i = 0; i < WeightArray.GetLength(0); i++)
         {
             for (int j = 0; j < WeightArray.GetLength(1); j++)
@@ -51,10 +51,10 @@ public class Layer
             }
         }
 
-        // Remplir BiasArray avec des valeurs aléatoires entre 1 et 10
+        // Remplir BiasArray avec des valeurs alï¿½atoires entre 1 et 10
         for (int i = 0; i < BiasArray.Length; i++)
         {
-            //BiasArray[i] = rnd.NextDouble() * 9 + 1;
+            //BiasArray[i] = rnd.NextDouble() * 2 + 1;
             BiasArray[i] = rnd.NextDouble() * 2 - 1;
         }
     }
