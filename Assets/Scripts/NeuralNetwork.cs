@@ -6,7 +6,7 @@ public class NeuralNetwork
 {
     private static int NextId = 0;
     public int id;
-    public int[] LayersLengths = { 6, 32, 32, 4 };
+    public int[] LayersLengths = { 6, 32, 32, 5 };
     public List<Layer> Layers = new List<Layer>();
 
     public NeuralNetwork()
@@ -81,7 +81,7 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
-    public void Mutate(double mutationRate = 0.05, double mutationRange = 0.5)
+    public void Mutate(double mutationRate = 0.05, double mutationRange = 0.2)
     {
 
         foreach (Layer layer in Layers)

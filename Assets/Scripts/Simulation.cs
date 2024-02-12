@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.IO;
 using UnityEngine;
 
 public class Simulation : MonoBehaviour
@@ -69,6 +67,7 @@ public class Simulation : MonoBehaviour
     public void GoNextGeneration()
     {
         SortNeuralNetworks();
+        SaveBestNN();
         GenerateNewNeuralNetworks();
         DestroyCars();
         StartSimulation();
@@ -92,6 +91,17 @@ public class Simulation : MonoBehaviour
                     NeuralNetworks[j + 1] = tempNN;
                 }
             }
+        }
+    }
+
+    public void SaveBestNN()
+    {
+        string filePath = "\\Unity\\Projects\\IA Course Poursuite\\Assets\\BestNeuralNetworks.txt";
+        string content = "\n\n\n\n" + NeuralNetworks[0];
+
+        using (StreamWriter writer = new StreamWriter(filePath,true))
+        {
+            writer.Write(content);
         }
     }
 
