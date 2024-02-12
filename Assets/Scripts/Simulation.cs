@@ -96,7 +96,7 @@ public class Simulation : MonoBehaviour
 
     public void SaveBestNN()
     {
-        string filePath = "\\Unity\\Projects\\IA Course Poursuite\\Assets\\BestNeuralNetworks.txt";
+        string filePath = "./Assets/BestNeuralNetworks.txt";
         string content = "\n\n\n\n" + NeuralNetworks[0];
 
         using (StreamWriter writer = new StreamWriter(filePath,true))

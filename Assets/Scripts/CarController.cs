@@ -85,7 +85,8 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        CheckRay();
+        if (Input.GetKey(KeyCode.Space))
+            CheckRay();
 
         //GetUserKeys();
         GetAiKeys();
@@ -104,10 +105,13 @@ public class CarController : MonoBehaviour
         int layerMask = 1 << LayerMask.NameToLayer("Checkpoints");
         layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
 
+        RaycastHit hitInfo;
+
+
         for (int i = 0; i < ray.Length; i++)
         {
-            Color rayColor = Physics.Raycast(ray[i], rayLength, ~layerMask) ? Color.red : Color.green;
-            Debug.DrawRay(ray[i].origin, ray[i].direction * rayLength, rayColor);
+            Physics.Raycast(ray[i], out hitInfo, rayLength, ~layerMask);
+            Debug.DrawRay(ray[i].origin, ray[i].direction * hitInfo.distance, Color.blue);
         }
     }
 
@@ -218,7 +222,7 @@ public class CarController : MonoBehaviour
         layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
 
         RaycastHit hitInfo;
-        
+
         for (int i = 1; i < 6; i++)
         {
             if (Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask))
