@@ -1,7 +1,5 @@
 using System;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
@@ -48,7 +46,8 @@ public class CarController : MonoBehaviour
         {
             if (collision.gameObject.name == "Guard" ||
                 collision.gameObject.name == "Extra Guard" ||
-                collision.gameObject.name == "Guard_2")
+                collision.gameObject.name == "Guard_2" ||
+                collision.gameObject.name == "Guard 2")
             {
                 this.Collision = true;
                 currentSpeed = 0;
@@ -85,8 +84,7 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
-            CheckRay();
+        CheckRay();
 
         //GetUserKeys();
         GetAiKeys();
