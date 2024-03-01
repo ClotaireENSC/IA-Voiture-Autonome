@@ -52,12 +52,6 @@ public class CarController : MonoBehaviour
                 this.Collision = true;
                 currentSpeed = 0;
             }
-            else
-            {
-                this.Collision = false;
-            }
-
-
         }
     }
 
@@ -213,7 +207,9 @@ public class CarController : MonoBehaviour
 
     private void GetAiKeys()
     {
-        double[] inputs = new double[6];
+        int nbInputs = NeuralNetwork.LayersLengths[0];
+
+        double[] inputs = new double[nbInputs];
         inputs[0] = currentSpeed / maxSpeed;
 
         int layerMask = 1 << LayerMask.NameToLayer("Checkpoints");
@@ -221,18 +217,10 @@ public class CarController : MonoBehaviour
 
         RaycastHit hitInfo;
 
-        for (int i = 1; i < 6; i++)
+        for (int i = 1; i < nbInputs; i++)
         {
-            if (Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask))
-            {
-                // Assign the distance of the collision to the input
-                inputs[i] = hitInfo.distance / rayLength;
-            }
-            else
-            {
-                // If no collision, assign a default value (e.g., maximum distance)
-                inputs[i] = 1; // You may want to adjust this value based on your game's requirements
-            }
+            inputs[i] = Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask) ? hitInfo.distance / rayLength : rayLength;
+            //inputs[i + 5] = 1 / inputs[i];
         }
 
         double[] outputs = NeuralNetwork.Brain(inputs);

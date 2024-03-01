@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using UnityEngine;
 
 public class NeuralNetwork
 {
     private static int NextId = 0;
     public int id;
-    public int[] LayersLengths = { 6, 32, 32, 5 };
+    public int[] LayersLengths = { 6, 32, 32, 4 };
     public List<Layer> Layers = new List<Layer>();
 
     public NeuralNetwork()
@@ -65,23 +67,30 @@ public class NeuralNetwork
 
         int outputLayerIndex = Layers.Count() - 1;
 
-        Layers[0].Predict(inputs);
-        Layers[0].Activation();
-
-        for (int i = 1; i < outputLayerIndex; i++)
+        if (outputLayerIndex != 0)
         {
-            Layers[i].Predict(Layers[i - 1].NodeArray);
-            Layers[i].Activation();
-        }
+            Layers[0].Predict(inputs);
+            Layers[0].Activation();
 
-        Layers[outputLayerIndex].Predict(Layers[outputLayerIndex - 1].NodeArray);
+            for (int i = 1; i < outputLayerIndex; i++)
+            {
+                Layers[i].Predict(Layers[i - 1].NodeArray);
+                Layers[i].Activation();
+            }
+
+            Layers[outputLayerIndex].Predict(Layers[outputLayerIndex - 1].NodeArray);
+        }
+        else
+        {
+            Layers[0].Predict(inputs);
+        }
 
         Layers[outputLayerIndex].Convert();
 
         return Layers[outputLayerIndex].NodeArray;
     }
 
-    public void Mutate(double mutationRate = 0.05, double mutationRange = 0.25)
+    public void Mutate(double mutationRate = 0.1, double mutationRange = 0.25)
     {
 
         foreach (Layer layer in Layers)
