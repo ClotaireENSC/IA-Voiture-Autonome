@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
+    System.Random rnd = new System.Random();
 
     public float currentSpeed;
     public float maxSpeed = 50;
@@ -89,6 +90,10 @@ public class CarController : MonoBehaviour
         {
             Move();
             Rotate();
+            if (rnd.NextDouble() < 0.001)
+            {
+                RndRotate();
+            }
         }
     }
 
@@ -177,6 +182,11 @@ public class CarController : MonoBehaviour
         {
             transform.Rotate(0, Time.deltaTime * angle * 20f / (Mathf.Abs(currentSpeed) + 10f), 0);
         }
+    }
+
+    private void RndRotate()
+    {
+        transform.Rotate(0, rnd.Next(0, 1), 0);
     }
 
     private void GetUserKeys()

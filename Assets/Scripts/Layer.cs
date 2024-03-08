@@ -106,7 +106,7 @@ public class Layer
         }
     }
 
-    public void Mutate(double mutationRate = 0.1, double mutationRange = 0.5)
+    public void Mutate(double mutationRate, double mutationRange)
     {
         Random rand = new Random();
 
