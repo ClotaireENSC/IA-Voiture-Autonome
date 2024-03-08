@@ -1,17 +1,26 @@
 using System;
 using System.IO;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Simulation : MonoBehaviour
 {
+    public bool Simulating = false;
+
     public GameObject CarPrefab;
-    private NeuralNetwork[] NeuralNetworks;
-    private GameObject[] CarsInstances;
+    private NeuralNetwork[] NeuralNetworks = new NeuralNetwork[1];
+    private GameObject[] CarsInstances = new GameObject[1];
 
     private double SimulationTime = 60;
     private double currentSimulationTime;
 
-    public int nbCars = 50;
+    public Slider mySlider;
+
+    public Button bSimuler;
+    public TextMeshProUGUI bSimulerTxt;
+
+    public int nbCars;
 
     public GameObject Camera;
 
@@ -19,8 +28,21 @@ public class Simulation : MonoBehaviour
 
     public void Start()
     {
+        bSimulerTxt = bSimuler.GetComponentInChildren<TextMeshProUGUI>();
+        UpdateNbCars();
+    }
+
+    public void Init()
+    {
+        UpdateNbCars();
         NeuralNetworks = new NeuralNetwork[nbCars];
         CarsInstances = new GameObject[nbCars];
+    }
+
+    public void SimulateRandom()
+    {
+        DestroyCars();
+        Init();
 
         for (int i = 0; i < nbCars; i++)
         {
@@ -33,19 +55,22 @@ public class Simulation : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKey(KeyCode.R) && currentSimulationTime > 2)
+        if (Simulating)
         {
-            NumeroGeneration = 0;
-            DestroyCars();
-            Start();
-        }
+            if (Input.GetKey(KeyCode.R) && currentSimulationTime > 2)
+            {
+                NumeroGeneration = 0;
+                DestroyCars();
+                SimulateRandom();
+            }
 
-        if (currentSimulationTime > SimulationTime || AllCarStopped() || Input.GetKey(KeyCode.RightArrow) && currentSimulationTime > 2)
-        {
-            GoNextGeneration();
-        }
+            if (currentSimulationTime > SimulationTime || AllCarStopped() || Input.GetKey(KeyCode.RightArrow) && currentSimulationTime > 2)
+            {
+                GoNextGeneration();
+            }
 
-        currentSimulationTime += Time.deltaTime;
+            currentSimulationTime += Time.deltaTime;
+        }
     }
 
     public void StartSimulation()
@@ -54,13 +79,14 @@ public class Simulation : MonoBehaviour
         currentSimulationTime = 0;
         ResetCamera();
         Debug.Log($"Génération : {NumeroGeneration++}");
+        Simulating = true;
     }
 
     public void InstantiateCars(NeuralNetwork[] neuralNetworks)
     {
         for (int i = 0; i < nbCars; i++)
         {
-            CarsInstances[i] = Instantiate(CarPrefab, transform.position,transform.rotation);
+            CarsInstances[i] = Instantiate(CarPrefab, transform.position, transform.rotation);
             CarsInstances[i].GetComponent<CarController>().NeuralNetwork = neuralNetworks[i];
         }
     }
@@ -100,7 +126,7 @@ public class Simulation : MonoBehaviour
         string filePath = "BestNeuralNetworks.txt";
         string content = "\n\n\n\n" + NeuralNetworks[0];
 
-        using (StreamWriter writer = new StreamWriter(filePath,true))
+        using (StreamWriter writer = new StreamWriter(filePath, true))
         {
             writer.Write(content);
         }
@@ -145,7 +171,7 @@ public class Simulation : MonoBehaviour
         {
             foreach (GameObject c in CarsInstances)
             {
-                if (c.GetComponent<CarController>().currentSpeed > 0.09f && c.GetComponent<CarController>().score>0)
+                if (c.GetComponent<CarController>().currentSpeed > 0.09f && c.GetComponent<CarController>().score > 0)
                     return false;
             }
             if (currentSimulationTime > 2)
@@ -157,5 +183,11 @@ public class Simulation : MonoBehaviour
     public void ResetCamera()
     {
         Camera.GetComponent<MoveCamera>().Init();
+    }
+
+    public void UpdateNbCars()
+    {
+        nbCars = 10 * Convert.ToInt32(mySlider.value);
+        bSimulerTxt.text = "Simuler : " + nbCars.ToString("F0");
     }
 }

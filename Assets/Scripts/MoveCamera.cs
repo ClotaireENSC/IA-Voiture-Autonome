@@ -15,7 +15,6 @@ public class MoveCamera : MonoBehaviour
 
     public void Start()
     {
-        Init();
     }
 
     public void Init()
@@ -23,23 +22,6 @@ public class MoveCamera : MonoBehaviour
         cars = GameObject.FindGameObjectsWithTag("Car");
         car = cars[0];
     }
-
-    //public void FindBestCar()
-    //{
-    //    if (cars == null) { return; }
-
-    //    CarController carController = car.GetComponent<CarController>();
-
-    //    GameObject[] tempCars = cars
-    //        .Where(c => c.GetComponent<CarController>().currentSpeed>0.01f)
-    //        .OrderBy(c => c.GetComponent<CarController>().score)
-    //        .ToArray();
-
-    //    if (!tempCars.Contains(car))
-    //    {
-    //        car = tempCars.Last();
-    //    }
-    //}
 
     public GameObject FindBestCar()
     {

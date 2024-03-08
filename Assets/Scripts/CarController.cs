@@ -15,7 +15,7 @@ public class CarController : MonoBehaviour
     public bool Collision = false;
 
     private Ray[] ray;
-    private float rayLength = 10f;
+    private float rayLength = 50f;
 
     public NeuralNetwork NeuralNetwork;
 
@@ -79,7 +79,8 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        CheckRay();
+        if (Input.GetKey(KeyCode.Space))
+            CheckRay();
 
         //GetUserKeys();
         GetAiKeys();
