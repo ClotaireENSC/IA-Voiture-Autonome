@@ -25,20 +25,20 @@ public class MoveCamera : MonoBehaviour
 
     public GameObject FindBestCar()
     {
-        // Les vivantes triées par score croissant
+        // Les vivantes triï¿½es par score croissant
         GameObject[] temp = cars.Where(c => c.GetComponent<CarController>().currentSpeed > 0.01).OrderBy(c => c.GetComponent<CarController>().score).ToArray();
 
         if (temp.Length == 0) return null; // Plus de vivantes
 
         GameObject last = temp.Last(); // La meilleure en vie
 
-        if (car == null) return last; // Pas de best (premier round), on prend la dernière
+        if (car == null) return last; // Pas de best (premier round), on prend la derniï¿½re
 
         // Best est vivante
         if (temp.Contains(car))
-            return car.GetComponent<CarController>().score >= last.GetComponent<CarController>().score ? car : last; // Retourne meilleure entre best et dernière
+            return car.GetComponent<CarController>().score >= last.GetComponent<CarController>().score ? car : last; // Retourne meilleure entre best et derniï¿½re
 
-        // Best est morte donc dernière
+        // Best est morte donc derniï¿½re
         return last;
     }
 

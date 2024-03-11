@@ -15,7 +15,7 @@ public class CarController : MonoBehaviour
     public bool Collision = false;
 
     private Ray[] ray;
-    private float rayLength = 50f;
+    private float rayLength = 10f;
 
     public NeuralNetwork NeuralNetwork;
 
@@ -228,7 +228,9 @@ public class CarController : MonoBehaviour
 
         RaycastHit hitInfo;
 
-        for (int i = 1; i < nbInputs; i++)
+        inputs[1] = Physics.Raycast(ray[0], out hitInfo, (rayLength + 40), ~layerMask) ? hitInfo.distance / (rayLength+40) : (rayLength + 40);
+
+        for (int i = 2; i < nbInputs; i++)
         {
             inputs[i] = Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask) ? hitInfo.distance / rayLength : rayLength;
             //inputs[i + 5] = 1 / inputs[i];

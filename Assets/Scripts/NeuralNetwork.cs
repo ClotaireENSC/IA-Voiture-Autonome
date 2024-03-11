@@ -90,9 +90,9 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
-    public void Mutate(double mutationRate = 0.25, double mutationRange = 0.5)
+    public void Mutate(double mutationRate = 0.2, double mutationRange = 0.5)
     {
-
+        // mutationRate = 100/(nbGen+200);
         foreach (Layer layer in Layers)
         {
             layer.Mutate(mutationRate, mutationRange);
