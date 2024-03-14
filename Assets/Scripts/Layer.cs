@@ -136,24 +136,20 @@ public class Layer
 
     public override string ToString()
     {
-        string outString = "===\nInput vers Layer :\n";
+        string outString = "";
 
         for (int i = 0; i < WeightArray.GetLength(0); i++)
         {
             for (int j = 0; j < WeightArray.GetLength(1); j++)
             {
-                outString += $"\tInput.{i} -> Layer.{j} : {WeightArray[i, j]}\n";
+                outString += $"{WeightArray[i, j]}\n";
             }
         }
 
-        outString += "Biais :\n";
-
         for (int i = 0; i < BiasArray.Length; i++)
         {
-            outString += $"\tLayer.{i} : {BiasArray[i]}\n";
+            outString += $"{BiasArray[i]}\n";
         }
-
-        outString += "===";
 
         return outString;
     }

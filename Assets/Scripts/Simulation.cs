@@ -15,11 +15,6 @@ public class Simulation : MonoBehaviour
     private double SimulationTime = 60;
     private double currentSimulationTime;
 
-    public Slider mySlider;
-
-    public Button bSimuler;
-    public TextMeshProUGUI bSimulerTxt;
-
     public int nbCars;
 
     public GameObject Camera;
@@ -28,13 +23,10 @@ public class Simulation : MonoBehaviour
 
     public void Start()
     {
-        bSimulerTxt = bSimuler.GetComponentInChildren<TextMeshProUGUI>();
-        UpdateNbCars();
     }
 
     public void Init()
     {
-        UpdateNbCars();
         NeuralNetworks = new NeuralNetwork[nbCars];
         CarsInstances = new GameObject[nbCars];
     }
@@ -43,6 +35,8 @@ public class Simulation : MonoBehaviour
     {
         DestroyCars();
         Init();
+
+        NumeroGeneration = 0;
 
         for (int i = 0; i < nbCars; i++)
         {
@@ -124,9 +118,9 @@ public class Simulation : MonoBehaviour
     public void SaveBestNN()
     {
         string filePath = "BestNeuralNetworks.txt";
-        string content = "\n\n\n\n" + NeuralNetworks[0];
+        string content = NeuralNetworks[0].ToString();
 
-        using (StreamWriter writer = new StreamWriter(filePath, true))
+        using (StreamWriter writer = new StreamWriter(filePath, false))
         {
             writer.Write(content);
         }
@@ -183,11 +177,5 @@ public class Simulation : MonoBehaviour
     public void ResetCamera()
     {
         Camera.GetComponent<MoveCamera>().Init();
-    }
-
-    public void UpdateNbCars()
-    {
-        nbCars = 10 * Convert.ToInt32(mySlider.value);
-        bSimulerTxt.text = "Simuler : " + nbCars.ToString("F0");
     }
 }

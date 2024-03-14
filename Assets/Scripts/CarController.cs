@@ -105,8 +105,10 @@ public class CarController : MonoBehaviour
 
         RaycastHit hitInfo;
 
+        Physics.Raycast(ray[0], out hitInfo, rayLength+40, ~layerMask);
+        Debug.DrawRay(ray[0].origin, ray[0].direction * hitInfo.distance, Color.blue);
 
-        for (int i = 0; i < ray.Length; i++)
+        for (int i = 1; i < ray.Length; i++)
         {
             Physics.Raycast(ray[i], out hitInfo, rayLength, ~layerMask);
             Debug.DrawRay(ray[i].origin, ray[i].direction * hitInfo.distance, Color.blue);

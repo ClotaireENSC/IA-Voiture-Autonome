@@ -110,9 +110,13 @@ public class NeuralNetwork
     public override string ToString()
     {
         string outString = "";
+        foreach (int i in LayersLengths)
+        {
+            outString += $"{i} ";
+        }
         foreach (Layer l in Layers)
         {
-            outString += l.ToString() + "\n";
+            outString += l.ToString();
         }
         return outString;
     }
