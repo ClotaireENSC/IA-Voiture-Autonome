@@ -77,7 +77,7 @@ public class CarController : MonoBehaviour
     }
 
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.Space))
             CheckRay();

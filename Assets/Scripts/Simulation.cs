@@ -19,7 +19,7 @@ public class Simulation : MonoBehaviour
 
     public GameObject Camera;
 
-    public int NumeroGeneration = 1;
+    public int NumeroGeneration = 0;
 
     public void Start()
     {
@@ -51,14 +51,7 @@ public class Simulation : MonoBehaviour
     {
         if (Simulating)
         {
-            if (Input.GetKey(KeyCode.R) && currentSimulationTime > 2)
-            {
-                NumeroGeneration = 0;
-                DestroyCars();
-                SimulateRandom();
-            }
-
-            if (currentSimulationTime > SimulationTime || AllCarStopped() || Input.GetKey(KeyCode.RightArrow) && currentSimulationTime > 2)
+            if (currentSimulationTime > SimulationTime || AllCarStopped())
             {
                 GoNextGeneration();
             }
@@ -91,6 +84,7 @@ public class Simulation : MonoBehaviour
         GenerateNewNeuralNetworks();
         DestroyCars();
         StartSimulation();
+        NumeroGeneration++;
     }
 
     public void SortNeuralNetworks()

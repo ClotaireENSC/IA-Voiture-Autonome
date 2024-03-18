@@ -46,7 +46,7 @@ public class Interface : MonoBehaviour
     // MODIFICATION DE TEXTES
     public void UpdateTimer()
     {
-        TimerTxt.text = $"Temps Restant : {Math.Round(Simulation.SimulationTime - Simulation.currentSimulationTime,2)}s";
+        TimerTxt.text = $"Temps Restant : {Math.Round(Simulation.SimulationTime - Simulation.currentSimulationTime, 2)}s";
     }
 
     public void UpdateNbGen()
@@ -75,7 +75,7 @@ public class Interface : MonoBehaviour
     {
         foreach (NeuralNetwork nn in Simulation.NeuralNetworks)
         {
-            nn.mutationRate = Math.Round(mutationRateSlider.value,2);
+            nn.mutationRate = Math.Round(mutationRateSlider.value, 2);
         }
     }
 }
