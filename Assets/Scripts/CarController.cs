@@ -244,7 +244,6 @@ public class CarController : MonoBehaviour
         TurnRight = Convert.ToInt32(outputs[2]);
         TurnLeft = Convert.ToInt32(outputs[3]);
 
-
         //string inputsString = "";
         //for (int i = 0; i < 6; i++)
         //    inputsString += $"{inputs[i]}/";

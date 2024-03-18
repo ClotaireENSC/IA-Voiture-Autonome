@@ -9,17 +9,17 @@ public class Simulation : MonoBehaviour
     public bool Simulating = false;
 
     public GameObject CarPrefab;
-    private NeuralNetwork[] NeuralNetworks = new NeuralNetwork[1];
-    private GameObject[] CarsInstances = new GameObject[1];
+    public NeuralNetwork[] NeuralNetworks = new NeuralNetwork[1];
+    public GameObject[] CarsInstances = new GameObject[1];
 
-    private double SimulationTime = 60;
-    private double currentSimulationTime;
+    public double SimulationTime = 60;
+    public double currentSimulationTime;
 
     public int nbCars;
 
     public GameObject Camera;
 
-    private int NumeroGeneration = 1;
+    public int NumeroGeneration = 1;
 
     public void Start()
     {
@@ -72,7 +72,6 @@ public class Simulation : MonoBehaviour
         InstantiateCars(NeuralNetworks);
         currentSimulationTime = 0;
         ResetCamera();
-        Debug.Log($"Génération : {NumeroGeneration++}");
         Simulating = true;
     }
 

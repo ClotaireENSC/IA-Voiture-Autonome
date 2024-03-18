@@ -11,6 +11,9 @@ public class NeuralNetwork
     public int[] LayersLengths = { 6, 32, 32, 4 };
     public List<Layer> Layers = new List<Layer>();
 
+    public double mutationRate = 0.2;
+    public double mutationRange = 0.5;
+
     public NeuralNetwork()
     {
         id = NextId++;
@@ -24,6 +27,8 @@ public class NeuralNetwork
     {
         id = NextId++;
         LayersLengths = original_NN.LayersLengths;
+        mutationRate = original_NN.mutationRate;
+        mutationRange = original_NN.mutationRange;
 
         foreach (Layer original_NNLayer in original_NN.Layers)
         {
@@ -90,7 +95,7 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
-    public void Mutate(double mutationRate = 0.2, double mutationRange = 0.5)
+    public void Mutate()
     {
         // mutationRate = 100/(nbGen+200);
         foreach (Layer layer in Layers)
