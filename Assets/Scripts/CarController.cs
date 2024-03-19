@@ -105,7 +105,7 @@ public class CarController : MonoBehaviour
 
         RaycastHit hitInfo;
 
-        Physics.Raycast(ray[0], out hitInfo, rayLength+40, ~layerMask);
+        Physics.Raycast(ray[0], out hitInfo, rayLength + 40, ~layerMask);
         Debug.DrawRay(ray[0].origin, ray[0].direction * hitInfo.distance, Color.blue);
 
         for (int i = 1; i < ray.Length; i++)
@@ -230,12 +230,11 @@ public class CarController : MonoBehaviour
 
         RaycastHit hitInfo;
 
-        inputs[1] = Physics.Raycast(ray[0], out hitInfo, (rayLength + 40), ~layerMask) ? hitInfo.distance / (rayLength+40) : (rayLength + 40);
+        inputs[1] = Physics.Raycast(ray[0], out hitInfo, (rayLength + 40), ~layerMask) ? hitInfo.distance / (rayLength + 40) : (rayLength + 40);
 
         for (int i = 2; i < nbInputs; i++)
         {
             inputs[i] = Physics.Raycast(ray[i - 1], out hitInfo, rayLength, ~layerMask) ? hitInfo.distance / rayLength : rayLength;
-            //inputs[i + 5] = 1 / inputs[i];
         }
 
         double[] outputs = NeuralNetwork.Brain(inputs);
@@ -243,11 +242,6 @@ public class CarController : MonoBehaviour
         Decelerate = Convert.ToInt32(outputs[1]);
         TurnRight = Convert.ToInt32(outputs[2]);
         TurnLeft = Convert.ToInt32(outputs[3]);
-
-        //string inputsString = "";
-        //for (int i = 0; i < 6; i++)
-        //    inputsString += $"{inputs[i]}/";
-        //Debug.Log(inputsString);
     }
 
     public void ShowText()
