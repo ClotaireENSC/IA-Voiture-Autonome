@@ -4,16 +4,24 @@ using System.Linq;
 using System.IO;
 using UnityEngine;
 
+/*
+Cette classe représente un réseau de neurones artificiels (RNA) avec plusieurs couches.
+
+RDN : Reseau de Neurones
+*/
 public class NeuralNetwork
 {
     private static int NextId = 0;
     public int id;
-    public int[] LayersLengths = { 6, 32, 32, 4 };
+
+    // Forme du RDN (ici, 6 entrees, 1 couches cachees à 16 neurones, 4 sorties)
+    public int[] LayersLengths = { 6, 16, 4 };
     public List<Layer> Layers = new List<Layer>();
 
     public double mutationRate = 0.2;
     public double mutationRange = 0.5;
 
+    // Constructeur de RDN vide
     public NeuralNetwork()
     {
         id = NextId++;
@@ -23,6 +31,7 @@ public class NeuralNetwork
         }
     }
 
+    // Constructeur d'un RDN à partir d'un autre RDN (pour eviter les problemes de reference)
     public NeuralNetwork(NeuralNetwork original_NN)
     {
         id = NextId++;
@@ -53,6 +62,8 @@ public class NeuralNetwork
         }
     }
 
+
+    // Reinitialisation du RDN
     public void RAZ()
     {
         foreach (Layer layer in Layers)
@@ -61,6 +72,8 @@ public class NeuralNetwork
         }
     }
 
+
+    // Fonction principale qui donne des sorties (outputs) a des entrees (inputs)
     public double[] Brain(double[] inputs)
     {
         if (inputs.Length != Layers[0].NbInputs)
@@ -72,6 +85,8 @@ public class NeuralNetwork
 
         int outputLayerIndex = Layers.Count() - 1;
 
+
+        // Forward propagation
         if (outputLayerIndex != 0)
         {
             Layers[0].Predict(inputs);
@@ -95,6 +110,8 @@ public class NeuralNetwork
         return Layers[outputLayerIndex].NodeArray;
     }
 
+
+    // Applique la mutation à chaque couche du RDN
     public void Mutate()
     {
         // mutationRate = 100/(nbGen+200);

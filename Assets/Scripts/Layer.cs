@@ -1,5 +1,12 @@
 using System;
 
+/*
+Cette classe représente la couche d'un réseau de neurones artificiels (RNA) avec plusieurs couches.
+
+Une couche est definie par le nombre d'entrees, sont nombre de neurones, les poids et les biais des liens/neurones
+
+RDN : Reseau de Neurones
+*/
 public class Layer
 {
     public int NbInputs { get; private set; }
@@ -7,8 +14,12 @@ public class Layer
 
     public double[,] WeightArray;
     public double[] BiasArray;
+
+    // NodeArray est la valeur finale des neurones de la couche (different des biais)
     public double[] NodeArray;
 
+
+    // Constructeur
     public Layer(int nbInputs, int nbNodes)
     {
         NbInputs = nbInputs;
@@ -21,6 +32,8 @@ public class Layer
         Init();
     }
 
+
+    // Remplissage des differents tableaux
     public void Init()
     {
         for (int i = 0; i < WeightArray.GetLength(0); i++)
@@ -37,11 +50,13 @@ public class Layer
         }
     }
 
+
+    // Remplissage des tableaux avec des valeurs aleatoires
     public void Randomize()
     {
         Random rnd = new Random();
 
-        // Remplir WeightArray avec des valeurs al�atoires entre -1 et 1
+        // Remplir WeightArray avec des valeurs aleatoires entre -1 et 1
         for (int i = 0; i < WeightArray.GetLength(0); i++)
         {
             for (int j = 0; j < WeightArray.GetLength(1); j++)
@@ -50,14 +65,15 @@ public class Layer
             }
         }
 
-        // Remplir BiasArray avec des valeurs al�atoires entre 1 et 10
+        // Remplir BiasArray avec des valeurs aleatoires entre -1 et 1
         for (int i = 0; i < BiasArray.Length; i++)
         {
-            //BiasArray[i] = rnd.NextDouble() * 2 + 1;
             BiasArray[i] = rnd.NextDouble() * 2 - 1;
         }
     }
 
+
+    // Calcul des valeurs de sortie des neurones de la couche selon les valeurs d'entree (inputArray)
     public void Predict(double[] inputArray)
     {
         if (inputArray.Length != NbInputs)
@@ -80,6 +96,8 @@ public class Layer
         }
     }
 
+
+    // Application de la fonction d'activation (ici on utilise la rampe)
     public void Activation()
     {
         for (int i = 0; i < NbNodes; i++)
@@ -91,6 +109,8 @@ public class Layer
         }
     }
 
+
+    // Fonction "d'activation" utilisee pour la derniere couche, afin que les valeurs soient 0 ou 1
     public void Convert()
     {
         for (int i = 0; i < NbNodes; i++)
@@ -106,6 +126,8 @@ public class Layer
         }
     }
 
+
+    // Applique la mutation a la couche selon un taux et une taille de mutation
     public void Mutate(double mutationRate, double mutationRange)
     {
         Random rand = new Random();

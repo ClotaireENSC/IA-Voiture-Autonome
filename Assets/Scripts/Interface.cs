@@ -3,17 +3,24 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+Classe utilis√©e pour gerer l'interface de la simulation
+*/
 public class Interface : MonoBehaviour
 {
+    // Recuperation des variables de la simulation
     public Simulation Simulation;
 
+    // Nombre de voitures
     public Slider carSlider;
     public Button bSimuler;
 
+    // Gestion des textes
     public TextMeshProUGUI bSimulerTxt;
     public TextMeshProUGUI NbGenTxt;
     public TextMeshProUGUI TimerTxt;
 
+    // Mutation
     public Slider mutationRateSlider;
     public TextMeshProUGUI mutationRateTxt;
 
@@ -51,7 +58,7 @@ public class Interface : MonoBehaviour
 
     public void UpdateNbGen()
     {
-        NbGenTxt.text = $"GÈnÈration {Simulation.NumeroGeneration}";
+        NbGenTxt.text = $"G√©n√©ration {Simulation.NumeroGeneration}";
     }
 
     public void UpdateNbCarsTxt()

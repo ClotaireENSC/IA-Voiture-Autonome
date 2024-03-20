@@ -4,14 +4,23 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+Classe principale gerant la simulation
+(Lancement de n voitures, gestion des réseaux de neurones, algorithme genetique, etc)
+
+RDN : Reseau de Neurones
+*/
 public class Simulation : MonoBehaviour
 {
     public bool Simulating = false;
 
     public GameObject CarPrefab;
+
+    // Tableaux des Voitures et des RDN en cours
     public NeuralNetwork[] NeuralNetworks = new NeuralNetwork[1];
     public GameObject[] CarsInstances = new GameObject[1];
 
+    // Temps de simulation (1min)
     public double SimulationTime = 60;
     public double currentSimulationTime;
 
@@ -21,16 +30,14 @@ public class Simulation : MonoBehaviour
 
     public int NumeroGeneration = 0;
 
-    public void Start()
-    {
-    }
-
     public void Init()
     {
         NeuralNetworks = new NeuralNetwork[nbCars];
         CarsInstances = new GameObject[nbCars];
     }
 
+
+    // Lancement d'une simulation avec des voitures a RDN aleatoires
     public void SimulateRandom()
     {
         DestroyCars();
@@ -38,6 +45,7 @@ public class Simulation : MonoBehaviour
 
         NumeroGeneration = 0;
 
+        // Remplissage des RDN
         for (int i = 0; i < nbCars; i++)
         {
             NeuralNetworks[i] = new NeuralNetwork();
@@ -47,6 +55,8 @@ public class Simulation : MonoBehaviour
         StartSimulation();
     }
 
+
+    // A chaque frame, si toutes les voitures sont arretees, on passe a la prochaine simulation
     public void Update()
     {
         if (Simulating)
@@ -60,6 +70,8 @@ public class Simulation : MonoBehaviour
         }
     }
 
+
+    // Lance une simulation
     public void StartSimulation()
     {
         InstantiateCars(NeuralNetworks);
@@ -68,6 +80,8 @@ public class Simulation : MonoBehaviour
         Simulating = true;
     }
 
+
+    // Cree les voitures dans l'environnement avec leurs RDN respectifs
     public void InstantiateCars(NeuralNetwork[] neuralNetworks)
     {
         for (int i = 0; i < nbCars; i++)
@@ -77,18 +91,34 @@ public class Simulation : MonoBehaviour
         }
     }
 
+
+    // Passage d'une simulation à la suivante
     public void GoNextGeneration()
     {
+        // Tri des RDN pour avoir les plus performants
         SortNeuralNetworks();
+
+        // Sauvegarde du meilleur RDN dans un .txt
         SaveBestNN();
+
+        // Creation de nouveaux RDN (par mutation des meilleurs)
         GenerateNewNeuralNetworks();
+
+        // Suppression des instances des voitures dans l'environnement
         DestroyCars();
+
+        // Debut de la nouvelle simulation
         StartSimulation();
+
         NumeroGeneration++;
     }
 
+
+    // Tri des meilleurs RDN (10%)
     public void SortNeuralNetworks()
     {
+        // Tri a bulle classique sur les RDN
+
         for (int i = 0; i < nbCars - 1; i++)
         {
             for (int j = 0; j < nbCars - i - 1; j++)
@@ -108,6 +138,8 @@ public class Simulation : MonoBehaviour
         }
     }
 
+
+    // Ecriture du meilleur RDN dans un .txt
     public void SaveBestNN()
     {
         string filePath = "BestNeuralNetworks.txt";
@@ -119,12 +151,16 @@ public class Simulation : MonoBehaviour
         }
     }
 
+
+    // Mutation des 10% meilleurs RDN pour reccrer un echantillon de "nbCars" RDN
     public void GenerateNewNeuralNetworks()
     {
         NeuralNetwork[] NewNeuralNetworks = new NeuralNetwork[nbCars];
 
         int NbDixieme = nbCars / 10;
 
+
+        // Creation du nouvel echantillon avec des RDN identiques
         for (int i = 0; i < 10; i++)
         {
             for (int j = 1; j <= NbDixieme; j++)
@@ -133,6 +169,8 @@ public class Simulation : MonoBehaviour
             }
         }
 
+
+        // Mutations
         for (int i = 0; i < nbCars; i++)
         {
             NewNeuralNetworks[i].Mutate();
@@ -141,6 +179,8 @@ public class Simulation : MonoBehaviour
         NeuralNetworks = NewNeuralNetworks;
     }
 
+
+    // Suppression des voitures dans l'environnement
     public void DestroyCars()
     {
         if (CarsInstances[0] != null)
@@ -152,6 +192,8 @@ public class Simulation : MonoBehaviour
         }
     }
 
+
+    // Recherche de si toutes les voitures se sont arretees
     public bool AllCarStopped()
     {
         if (CarsInstances[0] != null)

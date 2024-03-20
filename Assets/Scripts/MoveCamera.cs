@@ -3,47 +3,57 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/*
+MoveCamera est une classe attachee à la camera pour la controler 
+*/
 public class MoveCamera : MonoBehaviour
 {
+    // Recuperation des voitures (cars) et de la voiture que l'on va suivre (car)
     public GameObject[] cars;
     private GameObject car;
+
+    // Parametres de la camera
     private float distance = 8f;
     private float height = 4f;
     private float rotationDamping = 3f;
 
-    private bool isAboveCar = false; 
+    // Deuxieme vue
+    private bool isAboveCar = false;
 
     private Vector3 rotationVector;
 
-    public void Start()
-    {
-    }
 
+    // Recuperation des voitures et de la premiere
     public void Init()
     {
         cars = GameObject.FindGameObjectsWithTag("Car");
         car = cars[0];
     }
 
+
+    // Fonction majeure de la classe qui va chercher la meilleure voiture pour la suivre
+    // Le but ici est de recuperer la voiture ayant le plus haut score, qui n'est pas collisionee
     public GameObject FindBestCar()
     {
-        // Les vivantes triées par score croissant
+        // tri des voitures non collisionees par score croissant (filtrage + tri)
         GameObject[] temp = cars.Where(c => c.GetComponent<CarController>().currentSpeed > 0.01).OrderBy(c => c.GetComponent<CarController>().score).ToArray();
 
         if (temp.Length == 0) return null; // Plus de vivantes
 
         GameObject last = temp.Last(); // La meilleure en vie
 
-        if (car == null) return last; // Pas de best (premier round), on prend la dernière
+        if (car == null) return last; // Pas de meilleure, on renvoie la derniere voiture
 
-        // Best est vivante
+        // Renvoi de la meilleure voiture entre la meilleure actuelle et la meilleure de la liste
         if (temp.Contains(car))
-            return car.GetComponent<CarController>().score >= last.GetComponent<CarController>().score ? car : last; // Retourne meilleure entre best et dernière
+            return car.GetComponent<CarController>().score >= last.GetComponent<CarController>().score ? car : last;
 
-        // Best est morte donc dernière
+        // Cas ou la voiture actuelle est collisionee
         return last;
     }
 
+
+    // A chaque update on recupere la meilleure voiture puis on applique un mouvement a la camera
     void LateUpdate()
     {
         car = FindBestCar();
