@@ -213,4 +213,19 @@ public class Simulation : MonoBehaviour
     {
         Camera.GetComponent<MoveCamera>().Init();
     }
+
+
+
+    public void LoadBestNeuralNetwork()
+    {
+
+    }
+
+
+    // Lance la simulation de la meilleure voiture enregistrée a ce moment
+    public void SimulateBestCar()
+    {
+        LoadBestNeuralNetwork();
+
+    }
 }
