@@ -11,7 +11,7 @@ public class MoveCamera : MonoBehaviour
     private float height = 4f;
     private float rotationDamping = 3f;
 
-    private bool isAboveCar = false; 
+    private bool isAboveCar = false;
 
     private Vector3 rotationVector;
 
@@ -47,9 +47,9 @@ public class MoveCamera : MonoBehaviour
     void LateUpdate()
     {
         car = FindBestCar();
-        if (car != null)
+        if (!isAboveCar)
         {
-            if (!isAboveCar)
+            if (car != null)
             {
                 Transform car_transform = car.transform;
 
@@ -70,7 +70,10 @@ public class MoveCamera : MonoBehaviour
                 transform.position = temp;
                 transform.LookAt(car_transform);
             }
-            else
+        }
+        else
+        {
+            if (car != null)
             {
                 Transform car_transform = car.transform;
                 transform.position = new Vector3(car_transform.position.x, 30, car_transform.position.z);
@@ -79,13 +82,12 @@ public class MoveCamera : MonoBehaviour
         }
     }
 
+
     void FixedUpdate()
     {
         if (car != null)
         {
             Transform car_transform = car.transform;
-
-            float acc = car_transform.GetComponent<Rigidbody>().velocity.magnitude;
 
             Vector3 temp = rotationVector;
             temp.y = car_transform.eulerAngles.y;
