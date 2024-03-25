@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "IA Course Poursuite.sln"
+    "dotnet.defaultSolution": "IA Course Poursuite.sln",
+    "dotnet.preferCSharpExtension": true
 }
