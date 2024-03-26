@@ -84,7 +84,8 @@ public class Simulation : MonoBehaviour
     // Cree les voitures dans l'environnement avec leurs RDN respectifs
     public void InstantiateCars(NeuralNetwork[] neuralNetworks)
     {
-        for (int i = 0; i < nbCars; i++)
+        CarsInstances = new GameObject[neuralNetworks.Length];
+        for (int i = 0; i < neuralNetworks.Length; i++)
         {
             CarsInstances[i] = Instantiate(CarPrefab, transform.position, transform.rotation);
             CarsInstances[i].GetComponent<CarController>().NeuralNetwork = neuralNetworks[i];
@@ -216,8 +217,40 @@ public class Simulation : MonoBehaviour
 
 
 
-    public void LoadBestNeuralNetwork()
+    public NeuralNetwork LoadBestNeuralNetwork()
     {
+        string line;
+
+        StreamReader sr = new StreamReader("BestNeuralNetworks.txt");
+        line = sr.ReadLine()!;
+
+        string[] shapeList = line.Split(" ");
+        int[] shapeInt = new int[shapeList.Length];
+
+        for (int i = 0; i < shapeList.Length - 1; i++) shapeInt[i] = Convert.ToInt32(shapeList[i]);
+
+        NeuralNetwork NN = new NeuralNetwork();
+
+        for (int i = 1; i < shapeInt.Length; i++)
+        {
+            int actualNbNeurons = shapeInt[i];
+            int actualNbInputs = shapeInt[i - 1];
+
+            for (int j = 0; j < actualNbInputs; j++)
+            {
+                for (int k = 0; k < actualNbNeurons; k++)
+                {
+                    NN.Layers[i - 1].WeightArray[j, k] = (float)Convert.ToDouble(sr.ReadLine());
+                }
+            }
+
+            for (int k = 0; k < actualNbNeurons; k++)
+            {
+                NN.Layers[i - 1].BiasArray[k] = (float)Convert.ToDouble(sr.ReadLine());
+            }
+        }
+
+        return NN;
 
     }
 
@@ -225,7 +258,14 @@ public class Simulation : MonoBehaviour
     // Lance la simulation de la meilleure voiture enregistrée a ce moment
     public void SimulateBestCar()
     {
-        LoadBestNeuralNetwork();
+        NeuralNetwork nn = LoadBestNeuralNetwork();
 
+        NeuralNetworks = new NeuralNetwork[] { nn };
+
+        // Suppression des instances des voitures dans l'environnement
+        DestroyCars();
+
+        // Debut de la nouvelle simulation
+        StartSimulation();
     }
 }

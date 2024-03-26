@@ -136,6 +136,7 @@ public class NeuralNetwork
         {
             outString += $"{i} ";
         }
+        outString += "\n";
         foreach (Layer l in Layers)
         {
             outString += l.ToString();
