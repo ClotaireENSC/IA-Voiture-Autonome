@@ -15,7 +15,7 @@ public class NeuralNetwork
     public int id;
 
     // Forme du RDN (ici, 6 entrees, 1 couches cachees à 16 neurones, 4 sorties)
-    public int[] LayersLengths = { 6, 16, 4 };
+    public int[] LayersLengths = { 6, 32, 16, 8, 4 };
     public List<Layer> Layers = new List<Layer>();
 
     public double mutationRate = 0.2;
