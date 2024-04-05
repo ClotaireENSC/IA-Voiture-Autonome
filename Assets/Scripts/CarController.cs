@@ -95,6 +95,7 @@ public class CarController : MonoBehaviour
         // Récupération des choix de l'IA
         GetAiKeys();
 
+        CheckRay();
 
         // Tant que la voiture n'est pas collisionée, elle bouge
         if (!Collision)
@@ -212,6 +213,22 @@ public class CarController : MonoBehaviour
         transform.Rotate(0, rnd.Next(0, 1), 0);
     }
 
+    public void CheckRay()
+    {
+        int layerMask = 1 << LayerMask.NameToLayer("Checkpoints");
+        layerMask = layerMask | (1 << LayerMask.NameToLayer("Voitures"));
+
+        RaycastHit hitInfo;
+
+        Physics.Raycast(ray[0], out hitInfo, rayLength + 40, ~layerMask);
+        Debug.DrawRay(ray[0].origin, ray[0].direction * hitInfo.distance, Color.blue);
+
+        for (int i = 1; i < ray.Length; i++)
+        {
+            Physics.Raycast(ray[i], out hitInfo, rayLength, ~layerMask);
+            Debug.DrawRay(ray[i].origin, ray[i].direction * hitInfo.distance, Color.blue);
+        }
+    }
 
     // Fonction Utilisée pour les tests de circuit (L'utilisateur contrôle)
     private void GetUserKeys()
