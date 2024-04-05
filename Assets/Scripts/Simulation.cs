@@ -68,6 +68,11 @@ public class Simulation : MonoBehaviour
 
             currentSimulationTime += Time.deltaTime;
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            transform.position = new Vector3(-107.875f, 2f, 657.49f);
+        }
     }
 
 
@@ -216,7 +221,7 @@ public class Simulation : MonoBehaviour
     }
 
 
-
+    // Charge le dernier RDN enregistre dans "BestNeuralNetworks.txt"
     public NeuralNetwork LoadBestNeuralNetwork()
     {
         string line;
