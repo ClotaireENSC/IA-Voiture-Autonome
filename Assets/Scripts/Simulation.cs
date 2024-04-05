@@ -254,9 +254,7 @@ public class Simulation : MonoBehaviour
                 NN.Layers[i - 1].BiasArray[k] = (float)Convert.ToDouble(sr.ReadLine());
             }
         }
-
         return NN;
-
     }
 
 
